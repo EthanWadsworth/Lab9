@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "ad1e192bdc0145eb92814db0fe8d2401"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                        
   <title>Lab 9</title>
 
   <style>
@@ -28,14 +36,14 @@
 <body>
   <fieldset>
     <legend>Error Calculator</legend>
-    <input type="number" name="first-num" id="first-num" />
+    <input type="text" name="first-num" id="first-num" />
     <select name="operator" id="operator">
       <option>+</option>
       <option>-</option>
       <option>*</option>
       <option>/</option>
     </select>
-    <input type="number" name="second-num" id="second-num" />
+    <input type="text" name="second-num" id="second-num" />
     <button id="calculate">Calculate</button>
     <br />
     <output></output>
@@ -56,17 +64,120 @@
   </section>
 
   <script>
+
+    // check for invalid calc operations
+    function calc(firstNum, secondNum, operator) {
+      if (operator === '/' && secondNum === '0') {
+        throw new DivideByZeroError(`cannot divide ${firstNum} by 0!`);
+      }
+      try {
+        return eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch(err) {
+        return "error";
+      } finally {
+        console.log('calc finished');
+      }
+    }
+
+    // custom error class to check for divide by 0
+    class DivideByZeroError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "DivideByZeroError";
+      }
+    }
+    
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      output.innerHTML = calc(firstNum, secondNum, operator);
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+
+    // console.log button
+    errorBtns[0].addEventListener('click', () => {
+      console.log('Console Log Demo Button Clicked');
+    });
+
+    // console.error button
+    errorBtns[1].addEventListener('click', () => {
+      console.error('Console Error Button Clicked');
+    });
+
+    // console.dir button
+    errorBtns[2].addEventListener('click', () => {
+      console.dir(errorBtns[2]);
+    });
+
+    // console.dirxml button
+    errorBtns[3].addEventListener('click', () => {
+      console.dirxml(document.querySelector("body"));
+    });
+
+    // console.group button
+    errorBtns[4].addEventListener('click', () => {
+      console.group();
+    });
+
+    // console.groupEnd button
+    errorBtns[5].addEventListener('click', () => {
+      console.groupEnd();
+    });
+
+    // console.table button
+    errorBtns[6].addEventListener('click', () => {
+      console.table(['UCSD', 'CSE', 'Software Engineering', 'Development']);
+    });
+
+    // console.time button
+    errorBtns[7].addEventListener('click', () => {
+      console.log('Timer Started');
+      console.time('timer');
+    });
+
+    // console.timeEnd button
+    errorBtns[8].addEventListener('click', () => {
+      console.log('Timer Ended');
+      console.timeEnd('timer');
+    });
+
+    // functions for console.trace
+    function levelOne() {
+      function levelTwo() {
+        function levelThree() {
+          console.trace();
+        }
+        levelThree();
+      }
+      levelTwo();
+    }
+
+    // console.trace button
+    errorBtns[9].addEventListener('click', () => {
+      levelOne();
+    });
+
+    // check for global errors
+    window.onerror = function(message, url, line, col, error) {
+      console.log('Oh no! Error encountered!');
+
+      return false;
+    }
+
+    // trigger global error button
+    errorBtns[10].addEventListener('click', () => {
+      console.log(boom.explode());
+      // console.log('timer trace button');
+    });
+
+    // other broken code 
+    const user = user.password;
+
   </script>
 </body>
 </html>
